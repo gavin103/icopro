@@ -42,39 +42,14 @@
                 <el-button type="text" class="list-rate-btn">按结束时间排序</el-button>
                 <el-button type="text" class="list-rate-btn">按开始时间排序</el-button>
             </section>
-            <el-card shadow="hover" class="list-card clearfix">
-                <router-link class="card-img" to="/detail" tag="div">
-                    <img src="https://icobench.com/images/icos/icons/snbl.jpg" alt="">
-                </router-link>
-                <div class="card-info">
-                    <h3><i class="card-info-rocket"></i>title</h3>
-                    <p>一句话描述</p>
-                    <el-progress :text-inside="true" :stroke-width="12" :percentage="70"></el-progress>
-                </div>
-                <div class="card-rate">
-                    <el-rate
-                        v-model="rate"
-                        disabled
-                        show-score
-                        text-color="#ff9900"
-                        score-template="{value}">
-                    </el-rate>
-                </div>
-                <div class="card-end">
-                    3月3号
-                </div>
-                <div class="card-start">
-                    2月2号
-                </div>
-            </el-card>
-                        <el-card shadow="hover" class="list-card clearfix">
+            <el-card v-for="ico in icosList" :key="ico.icoId" shadow="hover" class="list-card clearfix">
                 <router-link class="card-img" to="/icodetail" tag="div">
                     <img src="https://icobench.com/images/icos/icons/snbl.jpg" alt="">
                 </router-link>
                 <div class="card-info">
-                    <h3><i class="card-info-rocket"></i>title</h3>
-                    <p>一句话描述</p>
-                    <el-progress :text-inside="true" :stroke-width="12" :percentage="70"></el-progress>
+                    <h3><i class="card-info-rocket"></i>{{ico.icoTitle}}</h3>
+                    <p>{{ico.icoDescription}}</p>
+                    <el-progress :stroke-width="8" :show-text=false :percentage="70"></el-progress>
                 </div>
                 <div class="card-rate">
                     <el-rate
@@ -86,114 +61,116 @@
                     </el-rate>
                 </div>
                 <div class="card-end">
-                    3月3号
+                    {{ico.endTime}}
                 </div>
                 <div class="card-start">
-                    2月2号
-                </div>
-            </el-card>
-                        <el-card shadow="hover" class="list-card clearfix">
-                <router-link class="card-img" to="/icodetail" tag="div">
-                    <img src="https://icobench.com/images/icos/icons/snbl.jpg" alt="">
-                </router-link>
-                <div class="card-info">
-                    <h3><i class="card-info-rocket"></i>title</h3>
-                    <p>一句话描述</p>
-                    <el-progress :text-inside="true" :stroke-width="12" :percentage="70"></el-progress>
-                </div>
-                <div class="card-rate">
-                    <el-rate
-                        v-model="rate"
-                        disabled
-                        show-score
-                        text-color="#ff9900"
-                        score-template="{value}">
-                    </el-rate>
-                </div>
-                <div class="card-end">
-                    3月3号
-                </div>
-                <div class="card-start">
-                    2月2号
+                    {{ico.startTime}}
                 </div>
             </el-card>
         </div>
         <div class="pagination">
             <el-pagination
                 layout="prev, pager, next"
-                :total="1000">
+                :total="pageInfo.total">
             </el-pagination>
         </div>
     </div>
 </template>
 
 <script>
-  export default {
-    data() {
-      return {
-          rate: 3.7,
-          curStatus:null,
-          selectedClarify:null,
-          clarification:[
-              {
-                  code:'Cryptocurrency',
-                  name:'电子货币'
-              },{
-                  code:'Dapp',
-                  name:'分布式应用'
-              },{
-                  code:'Smart-contract',
-                  name:'智能合约'
-              },{
-                  code:'Game',
-                  name:'游戏'
-              }
-          ],
-        options4: [],
-        value9: [],
-        list: [],
-        loading: false,
-        states: ["Alabama", "Alaska", "Arizona",
-        "Arkansas", "California", "Colorado",
-        "Connecticut", "Delaware", "Florida",
-        "Georgia", "Hawaii", "Idaho", "Illinois",
-        "Indiana", "Iowa", "Kansas", "Kentucky",
-        "Louisiana", "Maine", "Maryland",
-        "Massachusetts", "Michigan", "Minnesota",
-        "Mississippi", "Missouri", "Montana",
-        "Nebraska", "Nevada", "New Hampshire",
-        "New Jersey", "New Mexico", "New York",
-        "North Carolina", "North Dakota", "Ohio",
-        "Oklahoma", "Oregon", "Pennsylvania",
-        "Rhode Island", "South Carolina",
-        "South Dakota", "Tennessee", "Texas",
-        "Utah", "Vermont", "Virginia",
-        "Washington", "West Virginia", "Wisconsin",
-        "Wyoming"]
-      }
-    },
-    mounted() {
-      this.list = this.states.map(item => {
-        return { value: item, label: item };
-      });
-    },
-    methods: {
-      remoteMethod(query) {
-        if (query !== '') {
-          this.loading = true;
-          setTimeout(() => {
-            this.loading = false;
-            this.options4 = this.list.filter(item => {
-              return item.label.toLowerCase()
-                .indexOf(query.toLowerCase()) > -1;
-            });
-          }, 200);
-        } else {
-          this.options4 = [];
+    import Axios from 'axios';
+    import {Message} from 'element-ui';
+    export default {
+        data() {
+        return {
+            rate: 3.7,
+            curStatus:null,
+            selectedClarify:null,
+            clarification:[
+                {
+                    code:'Cryptocurrency',
+                    name:'电子货币'
+                },{
+                    code:'Dapp',
+                    name:'分布式应用'
+                },{
+                    code:'Smart-contract',
+                    name:'智能合约'
+                },{
+                    code:'Game',
+                    name:'游戏'
+                }
+            ],
+            options4: [],
+            value9: [],
+            icosList: [],
+            loading: false,
+            pageInfo:{},
+            states: ["Alabama", "Alaska", "Arizona",
+            "Arkansas", "California", "Colorado",
+            "Connecticut", "Delaware", "Florida",
+            "Georgia", "Hawaii", "Idaho", "Illinois",
+            "Indiana", "Iowa", "Kansas", "Kentucky",
+            "Louisiana", "Maine", "Maryland",
+            "Massachusetts", "Michigan", "Minnesota",
+            "Mississippi", "Missouri", "Montana",
+            "Nebraska", "Nevada", "New Hampshire",
+            "New Jersey", "New Mexico", "New York",
+            "North Carolina", "North Dakota", "Ohio",
+            "Oklahoma", "Oregon", "Pennsylvania",
+            "Rhode Island", "South Carolina",
+            "South Dakota", "Tennessee", "Texas",
+            "Utah", "Vermont", "Virginia",
+            "Washington", "West Virginia", "Wisconsin",
+            "Wyoming"]
         }
-      }
+        },
+        mounted() {
+            this.list = this.states.map(item => {
+                return { value: item, label: item };
+            });
+            this.getIcoList();
+        },
+        methods: {
+            remoteMethod(query) {
+                if (query !== '') {
+                this.loading = true;
+                setTimeout(() => {
+                    this.loading = false;
+                    this.options4 = this.list.filter(item => {
+                    return item.label.toLowerCase()
+                        .indexOf(query.toLowerCase()) > -1;
+                    });
+                }, 200);
+                } else {
+                this.options4 = [];
+                }
+            },
+            getIcoList(){
+                Axios.get("/api/getlist")
+                .then(res=>res.data)
+                .then(data=>{
+                    if(data.code == 1){
+                        if(data.datas && data.datas.icosList){
+                            const icosList = data.datas.icosList;
+                            console.log(icosList);
+                            this.icosList = icosList;
+                        }
+                        if(data.datas && data.datas.pageInfo){
+                            const pageInfo = data.datas.pageInfo;
+                            this.pageInfo = {...pageInfo};
+                        }
+                    }else{
+                        Message.error({
+                            message: data.msg||"请求失败",
+                            center: true
+                        });
+                    }
+                    
+                })
+            }
+        }
     }
-  }
 </script>
 <style scoped>
     .list{
