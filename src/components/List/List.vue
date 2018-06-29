@@ -147,7 +147,7 @@
                 }
             },
             getIcoList(){
-                Axios.get("/api/getlist")
+                Axios.get("http://localhost:8888/api/getlist")
                 .then(res=>res.data)
                 .then(data=>{
                     if(data.code == 1){
