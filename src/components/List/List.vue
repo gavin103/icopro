@@ -147,7 +147,7 @@
                 }
             },
             getIcoList(){
-                Axios.get("http://localhost:80/api/getlist.php")
+                Axios.get("http://gavin.frpgz1.idcfengye.com/api/getlist")
                 .then(res=>res.data)
                 .then(data=>{
                     if(data.code == 1){
