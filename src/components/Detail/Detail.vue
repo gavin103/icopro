@@ -1,26 +1,25 @@
 <template>
     <div class="detail">
-        <div class="detail-summary clearfix">
-            <div class="detail-summary-img">
-                <img src="https://img.alicdn.com/imgextra/i3/2203660023/TB2ZvI4kXXXXXX3XpXXXXXXXXXX_!!2203660023.jpg" alt="">
+        <div class="detail-summary">
+            <div class="detail-summary-title">
+                <h2>title</h2>
+                <p>一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述</p>
             </div>
-            <el-card shadow="hover" class="detail-summary-card">
-                <div class="detail-summary-text">
-                    <h3>title</h3>
-                    <p>一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述</p>
+
+            <el-card shadow="hover" class="detail-summary-card clearfix">
+                <div class="detail-summary-img">
+                    <img src="https://img.alicdn.com/imgextra/i3/2203660023/TB2ZvI4kXXXXXX3XpXXXXXXXXXX_!!2203660023.jpg" alt="">
                 </div>
-                <div class="detail-summary-times">
-                    <p><b>开始日期：</b>2月3日</p>
-                    <p><b>结束日期：</b>3月3日</p>
-                </div>
-                <div class="detail-summary-process">
-                    <div>
-                    <p><b>时间进度：</b></p>
-                    <el-progress type="circle" :percentage="25"></el-progress>
+                <div class="detail-summary-card-info">
+                    <div class="detail-summary-times">
+                        <p><b>开始日期：</b>2月3日</p>
+                        <p><b>结束日期：</b>3月3日</p>
                     </div>
-                    <div>
-                    <p><b>众筹进度：</b></p>
-                    <el-progress type="circle" :percentage="25"></el-progress>
+                    <div class="detail-summary-process">
+                        <div>
+                        <p><b>时间进度：</b></p>
+                        <el-progress type="circle" :percentage="25"></el-progress>
+                        </div>
                     </div>
                 </div>
             </el-card>
@@ -127,43 +126,27 @@
         position: relative;
         padding: 50px;
     }
-    .detail-summary{
-        margin-bottom: 30px;
+    .detail-summary-title{
+        margin-bottom: 12px;
     }
-    .detail-summary-img{
-        width: 660px;
-        height: 400px;
-        float: left;
+    .detail-summary-title h2{
+        font-size: 36px;
     }
-    .detail-summary-img img{
-        width: 100%;
-        height: 100%;
+    .detail-summary-title p{
+        font-size: 16px;
     }
     .detail-summary-card{
+        display: flex;
+    }
+    .detail-summary-img{
+        float: left;
+        width: 660px;
+    }
+    .detail-summary-img img{
+        width: 100%
+    }
+    .detail-summary-card-info{
         float: right;
-        width: 320px;
-        height: 400px;
+        width: 200px;
     }
-    .detail-summary-text{
-        margin-bottom: 20px;
-    }
-    .detail-summary-times{
-        margin-bottom: 20px;
-    }
-    .detail-summary-process{
-        display: flex;
-        justify-content: space-between;
-    }
-    .detail-summary-process div{
-        
-    }
-    .detail-description{
-        display: flex;
-        border-top: 1px solid rgba(0,0,0,0.3);
-    }
-    .detail-memo{
-
-    }
-
-
 </style>
