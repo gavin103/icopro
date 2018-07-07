@@ -63,6 +63,7 @@
 </template>
 
 <script>
+import Axios from 'axios';
   export default {
     data() {
       return {
@@ -107,9 +108,16 @@
       }
     },
     mounted() {
+        let id = this.$route.params.id;
+        this.getDetail(id);
     },
     methods: {
-      remoteMethod(query) {
+      getDetail(id) {
+          Axios.get(`http://localhost:8888/api/getdetail?id=${id}`)
+                .then(res=>res.data)
+                .then(data=>{
+                    console.log(data);
+                })
       }
     }
   }

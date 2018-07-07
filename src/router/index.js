@@ -62,7 +62,7 @@ const router = new Router({
       component: List,
     },
     {
-      path: '/icodetail',
+      path: '/icodetail/:id',
       name: 'Detail',
       component: Detail,
     },

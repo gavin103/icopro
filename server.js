@@ -17,9 +17,11 @@ app.use(bodyParser());
 //引入子路由
 const loginRouter = require('./server/routes/user.js');
 const listRouter = require('./server/routes/list.js');
+const detailRouter = require('./server/routes/detail.js');
 //装载子路由
 router.use('/api', loginRouter.routes(), loginRouter.allowedMethods());
 router.use('/api', listRouter.routes(), listRouter.allowedMethods());
+router.use('/api', detailRouter.routes(), detailRouter.allowedMethods());
 
 //加载路由中间件
 app.use(router.routes()).use(router.allowedMethods());
