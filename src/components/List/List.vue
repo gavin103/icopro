@@ -2,7 +2,7 @@
     <div class="list">
         <ul class="search-wrap">
             <li class="search-bar">
-                <el-input placeholder="请输入内容" v-model="input5" class="input-with-select">
+                <el-input placeholder="请输入内容" v-model="key" class="input-with-select">
                     <el-button type="primary" slot="append" icon="el-icon-search">搜索</el-button>
                 </el-input>
             </li>
@@ -28,12 +28,12 @@
         <div class="list-wrap">
             <section class="list-rate clearfix">
                 <h2>币种列表</h2>
-                <el-button type="text" class="list-rate-btn">评价等级<i class="el-icon-caret-bottom"></i></el-button>
+                <el-button type="text" class="list-rate-btn" @click="rangeByLevel">评价等级<i :class="rangeByLevelClass"></i></el-button>
                 <el-button type="text" class="list-rate-btn">结束时间<i class="el-icon-caret-bottom"></i></el-button>
-                <el-button type="text" class="list-rate-btn">开始时间<i class="el-icon-caret-bottom"></i></el-button>
+                <el-button type="text" class="list-rate-btn" @click="rangeByStart">开始时间<i :class="rangeByStartClass"></i></el-button>
             </section>
             <el-card v-for="ico in icosList" :key="ico.icoId" shadow="hover" class="list-card clearfix">
-                <router-link class="card-img" to="/icodetail" tag="div">
+                <router-link class="card-img" :to="{name:'Detail',params:{id:ico.icoId}}" tag="div">
                     <img :src="ico.smallImg" alt="">
                 </router-link>
                 <div class="card-info">
@@ -66,45 +66,56 @@
     import {Message} from 'element-ui';
     export default {
         data() {
-        return {
-            checkedItems:["全部"],
-            rate: 3.7,
-            curStatus:null,
-            selectedClarify:null,
-            clarification:[
-                {
-                    code:'Cryptocurrency',
-                    name:'电子货币'
-                },{
-                    code:'Dapp',
-                    name:'分布式应用'
-                },{
-                    code:'Smart-contract',
-                    name:'智能合约'
-                },{
-                    code:'Game',
-                    name:'游戏'
-                }
-            ],
-            options4: [],
-            value9: [],
-            icosList: [],
-            loading: false,
-            pageInfo:{},
-        }
+            return {
+                checkedItems:["全部"],
+                rate: 3.7,
+                curStatus:null,
+                selectedClarify:null,
+                clarification:[
+                    {
+                        code:'Cryptocurrency',
+                        name:'电子货币'
+                    },{
+                        code:'Dapp',
+                        name:'分布式应用'
+                    },{
+                        code:'Smart-contract',
+                        name:'智能合约'
+                    },{
+                        code:'Game',
+                        name:'游戏'
+                    }
+                ],
+                options4: [],
+                value9: [],
+                icosList: [],
+                loading: false,
+                pageInfo:{},
+                key:"", //搜索关键字
+                // 排序code +1/0/-1
+                rangeByLevelCode:0,
+                rangeByLevelClass:"el-icon-d-caret",
+                rangeByStartCode:0,
+                rangeByStartClass:"el-icon-d-caret",
+                rangeByEndCode:0,
+                rangeByEndClass:"el-icon-d-caret",
+            }
         },
         mounted() {
             this.getIcoList();
         },
         methods: {
-            getIcoList(){
-                Axios.get("http://gavin.frpgz1.idcfengye.com/api/getlist")
+            getIcoList(opt={}){
+                let url = "http://127.0.0.1:8888/api/getlist"; //本地测试
+                // let url = "http://gavin.frpgz1.idcfengye.com/api/getlist"; //线上环境
+                let queryStr = this.formatQry(opt);
+                console.log(queryStr);
+                Axios.get(url)
                 .then(res=>res.data)
                 .then(data=>{
                     if(data.code == 1){
                         if(data.datas && data.datas.icosList){
                             const icosList = data.datas.icosList;
-                            console.log(icosList);
                             this.icosList = icosList;
                         }
                         if(data.datas && data.datas.pageInfo){
@@ -119,6 +130,48 @@
                     }
                     
                 })
+            },
+            formatQry(opt={}){
+                if(Object.keys(opt).length>0){
+                    let queryStr = "?";
+                    for(let [key,value] of Object.entries(opt)){
+                        queryStr += `${key}=${value}&`;
+                    }
+                    return queryStr.slice(0,-1);
+                }else{
+                    return ""
+                }
+            },
+            rangList(key,code,list){
+                //code为1表示正序，code=-1 表示逆序；
+                if(list.length>0){
+                    if(key =="ratingLevel"){
+                        list = list.sort((x,y)=>{
+                            return (x[key]*1-y[key]*1)*code;
+                        });
+                    }else{
+                        list = list.sort((x,y)=>{
+                            let a = Date.parse(new Date(x[key]));
+                            let b = Date.parse(new Date(y[key]));
+                            return (a-b)*code;
+                        });
+                    }
+                } 
+            },
+            rangeByLevel(){
+                this.rangeByLevelCode == 0? this.rangeByLevelCode = 1:this.rangeByLevelCode*=(-1);
+                this.rangeByLevelCode == 1 && (this.rangeByLevelClass="el-icon-caret-bottom");
+                this.rangeByLevelCode == -1 && (this.rangeByLevelClass="el-icon-caret-top");
+                this.rangList("ratingLevel",this.rangeByLevelCode,this.icosList);
+            },
+            rangeByStart(){
+                this.rangeByStartCode == 0? this.rangeByStartCode = 1:this.rangeByStartCode*=(-1);
+                this.rangeByStartCode == 1 && (this.rangeByStartClass="el-icon-caret-bottom");
+                this.rangeByStartCode == -1 && (this.rangeByStartClass="el-icon-caret-top");
+                this.rangList("startTime",this.rangeByStartCode,this.icosList);
+            },
+            rangeByStart(){
+
             }
         }
     }

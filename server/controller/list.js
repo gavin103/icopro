@@ -18,6 +18,16 @@ const getDBList = ()=>{
 const getList =async(ctx)=>{
     let data = await getDBList();
     icosList = JSON.parse(data) || [];
+    const opt={};
+    opt.key = ctx.request.query.key;
+    if(opt.key){
+        icosList = icosList.filter((ico)=>{
+            let key = opt.key.toLowerCase();
+            let title = ico.icoTitle.toLowerCase();
+            let des = ico.icoDescription.toLowerCase();
+            return (title.includes(key) || des.includes(key));
+        })
+    }
     let total = icosList.length? icosList.length:0;
     ctx.body = {
         code:1,
