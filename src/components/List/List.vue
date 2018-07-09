@@ -3,22 +3,19 @@
         <ul class="search-wrap">
             <li class="search-bar">
                 <el-input placeholder="请输入内容" v-model="key" class="input-with-select">
-                    <el-button type="primary" slot="append" icon="el-icon-search">搜索</el-button>
+                    <el-button type="primary" slot="append" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 </el-input>
             </li>
             <li class="search-class">
-                <span class="search-item">通证分类</span>
-                <el-checkbox-group style="display:inline-block"
-                    v-model="checkedItems"
-                    :min="1"
-                    :max="5">
-                    <el-checkbox>全部</el-checkbox>
+                <span class="search-item">通证分类:</span>
+                <el-checkbox-group class="search-checkbox" v-model="checkedClarify" @change="handleCheckedClarify">
                     <el-checkbox v-for="item in clarification" :label="item.code" :key="item.code">{{item.name}}</el-checkbox>
                 </el-checkbox-group>
             </li>
             <li>
-                <span class="search-item">当前状态</span>
-                <el-radio-group v-model="curStatus">
+                <span class="search-item">当前状态:</span>
+                <el-radio-group v-model="curStatus" @change="changeTimeStatus">
+                    <el-radio :label="0">全部</el-radio>
                     <el-radio :label="1">即将开始</el-radio>
                     <el-radio :label="2">进行中</el-radio>
                     <el-radio :label="3">已经结束</el-radio>
@@ -29,7 +26,7 @@
             <section class="list-rate clearfix">
                 <h2>币种列表</h2>
                 <el-button type="text" class="list-rate-btn" @click="rangeByLevel">评价等级<i :class="rangeByLevelClass"></i></el-button>
-                <el-button type="text" class="list-rate-btn">结束时间<i class="el-icon-caret-bottom"></i></el-button>
+                <el-button type="text" class="list-rate-btn" @click="rangeByEnd">结束时间<i :class="rangeByEndClass"></i></el-button>
                 <el-button type="text" class="list-rate-btn" @click="rangeByStart">开始时间<i :class="rangeByStartClass"></i></el-button>
             </section>
             <el-card v-for="ico in icosList" :key="ico.icoId" shadow="hover" class="list-card clearfix">
@@ -39,7 +36,6 @@
                 <div class="card-info">
                     <h3><span class="card-info-rocket"></span>{{ico.icoTitle}}</h3>
                     <p>{{ico.icoDescription}}</p>
-                    <el-progress :stroke-width="8" :show-text=false :percentage="70"></el-progress>
                 </div>
                 <div class="card-rate">
                     <img src="http://47.104.31.231/image/static/levela.png" alt="">
@@ -64,33 +60,64 @@
 <script>
     import Axios from 'axios';
     import {Message} from 'element-ui';
+    const clarification=[
+                    {
+                        code:'c01',
+                        name:'电子货币'
+                    },{
+                        code:'c02',
+                        name:'分布式应用'
+                    },{
+                        code:'c03',
+                        name:'智能合约'
+                    },{
+                        code:'c04',
+                        name:'游戏'
+                    },{
+                        code:'c05',
+                        name:'人工智能'
+                    },{
+                        code:'c06',
+                        name:'物联网'
+                    },{
+                        code:'c07',
+                        name:'存储'
+                    },{
+                        code:'c08',
+                        name:'平台币'
+                    },{
+                        code:'c09',
+                        name:'物联网'
+                    },{
+                        code:'c10',
+                        name:'云概念币'
+                    },{
+                        code:'c11',
+                        name:'公链'
+                    },{
+                        code:'c12',
+                        name:'银行'
+                    },{
+                        code:'c13',
+                        name:'社交'
+                    },{
+                        code:'c14',
+                        name:'虚拟现实'
+                    },{
+                        code:'c15',
+                        name:'侧链'
+                    }
+                ];
     export default {
         data() {
             return {
-                checkedItems:["全部"],
-                rate: 3.7,
-                curStatus:null,
-                selectedClarify:null,
-                clarification:[
-                    {
-                        code:'Cryptocurrency',
-                        name:'电子货币'
-                    },{
-                        code:'Dapp',
-                        name:'分布式应用'
-                    },{
-                        code:'Smart-contract',
-                        name:'智能合约'
-                    },{
-                        code:'Game',
-                        name:'游戏'
-                    }
-                ],
-                options4: [],
-                value9: [],
-                icosList: [],
+                curStatus:0, //当前状态 0：全部 1：即将开始 2：进行中 3：已经结束
+                allIcosList:[], // 存储全部条目
+                icosList: [], // 当前显示条目
                 loading: false,
                 pageInfo:{},
+                clarification, //通证分类
+                checkedClarify:[],
                 key:"", //搜索关键字
                 // 排序code +1/0/-1
                 rangeByLevelCode:0,
@@ -106,17 +133,19 @@
         },
         methods: {
             getIcoList(opt={}){
-                let url = "http://127.0.0.1:8888/api/getlist"; //本地测试
-                // let url = "http://gavin.frpgz1.idcfengye.com/api/getlist"; //线上环境
+                this.loading = true;
+                //let url = "http://127.0.0.1:8888/api/getlist"; //本地测试
+                let url = "http://gavin.frpgz1.idcfengye.com/api/getlist"; //线上环境
                 let queryStr = this.formatQry(opt);
-                console.log(queryStr);
-                Axios.get(url)
+                Axios.get(url+queryStr)
                 .then(res=>res.data)
                 .then(data=>{
+                    this.loading = false;
                     if(data.code == 1){
                         if(data.datas && data.datas.icosList){
                             const icosList = data.datas.icosList;
-                            this.icosList = icosList;
+                            this.icosList = [...icosList];
+                            this.allIcosList = [...icosList];
                         }
                         if(data.datas && data.datas.pageInfo){
                             const pageInfo = data.datas.pageInfo;
@@ -127,22 +156,33 @@
                             message: data.msg||"请求失败",
                             center: true
                         });
-                    }
-                    
+                    }  
                 })
             },
             formatQry(opt={}){
                 if(Object.keys(opt).length>0){
                     let queryStr = "?";
                     for(let [key,value] of Object.entries(opt)){
-                        queryStr += `${key}=${value}&`;
+                        if(value){
+                            queryStr += `${key}=${value}&`;
+                        }
                     }
                     return queryStr.slice(0,-1);
                 }else{
                     return ""
                 }
             },
-            rangList(key,code,list){
+            //搜索框事件
+            handleSearch(){
+                this.getIcoList({key:this.key});
+                this.rangeByLevelCode = 0;
+                this.rangeByLevelClass = "el-icon-d-caret";
+                this.rangeByStartCode = 0;
+                this.rangeByStartClass = "el-icon-d-caret";
+                this.rangeByEndCode = 0;
+                this.rangeByEndClass = "el-icon-d-caret";
+            },
+            rangeList(key,code,list){
                 //code为1表示正序，code=-1 表示逆序；
                 if(list.length>0){
                     if(key =="ratingLevel"){
@@ -158,20 +198,75 @@
                     }
                 } 
             },
+            //按评价等级排序
             rangeByLevel(){
                 this.rangeByLevelCode == 0? this.rangeByLevelCode = 1:this.rangeByLevelCode*=(-1);
                 this.rangeByLevelCode == 1 && (this.rangeByLevelClass="el-icon-caret-bottom");
                 this.rangeByLevelCode == -1 && (this.rangeByLevelClass="el-icon-caret-top");
-                this.rangList("ratingLevel",this.rangeByLevelCode,this.icosList);
+                this.rangeList("ratingLevel",this.rangeByLevelCode,this.icosList);
+                this.rangeByStartClass = "el-icon-d-caret";
+                this.rangeByEndClass = "el-icon-d-caret";
             },
+            //按开始时间排序
             rangeByStart(){
                 this.rangeByStartCode == 0? this.rangeByStartCode = 1:this.rangeByStartCode*=(-1);
                 this.rangeByStartCode == 1 && (this.rangeByStartClass="el-icon-caret-bottom");
                 this.rangeByStartCode == -1 && (this.rangeByStartClass="el-icon-caret-top");
-                this.rangList("startTime",this.rangeByStartCode,this.icosList);
+                this.rangeList("startTime",this.rangeByStartCode,this.icosList);
+                this.rangeByLevelClass = "el-icon-d-caret";
+                this.rangeByEndClass = "el-icon-d-caret";
             },
-            rangeByStart(){
+            //按结束时间排序
+            rangeByEnd(){
+                this.rangeByEndCode == 0? this.rangeByEndCode = 1:this.rangeByEndCode*=(-1);
+                this.rangeByEndCode == 1 && (this.rangeByEndClass="el-icon-caret-bottom");
+                this.rangeByEndCode == -1 && (this.rangeByEndClass="el-icon-caret-top");
+                this.rangeList("endTime",this.rangeByEndCode,this.icosList);
+                this.rangeByLevelClass = "el-icon-d-caret";
+                this.rangeByStartClass = "el-icon-d-caret";
+            },
+            //筛选当前状态
+            changeTimeStatus(e){
+                const curTime = Date.parse(new Date());
+                switch(e){
+                    case 0:
+                        this.icosList = [...this.allIcosList];
+                        break;
+                    case 1: //即将开始 curtTime < startTime
+                        this.icosList = this.allIcosList.filter(ico=>{
+                            let startTime = Date.parse(new Date(ico.startTime))
+                            return curTime<startTime;
+                        });
+                        break;
+                    case 2:
+                        this.icosList = this.allIcosList.filter(ico=>{
+                            let startTime = Date.parse(new Date(ico.startTime))
+                            let endTime = Date.parse(new Date(ico.endTime))
+                            return (curTime>startTime)&&(curTime<endTime);
+                        });
+                        break;
+                    case 3:
+                        this.icosList = this.allIcosList.filter(ico=>{
+                            let endTime = Date.parse(new Date(ico.endTime))
+                            return (curTime>endTime);
+                        });
+                        break;                      
+                }
 
+            },
+            handleCheckedClarify(e){
+                const checked = [...e];
+                console.log("e",checked);
+                if(checked.length>0){
+                    this.icosList=[];
+                    this.allIcosList.forEach(ico=>{
+                        if(checked.includes(ico.classification)){
+                            this.icosList.push(ico);
+                        }
+                    })
+                }else{
+                    this.icosList = [...this.allIcosList];
+                }
             }
         }
     }
@@ -191,19 +286,24 @@
         border-bottom: 5px solid #f2f2f2;
         padding: 18px;
     }
-    .search-wrap li{
-        height: 36px;
-        line-height: 36px;
-    }
     .search-bar{
         width: 660px;
         margin-bottom: 15px;
     }
+    
     .search-item{
         display: inline-block;
         width: 100px;
-        font-weight: 600;
+        font-weight: 900;
         color: rgba(0,0,0,0.6);
+    }
+    .search-class .search-item{
+        vertical-align: top;
+    }
+    .search-checkbox{
+        display: inline-block;
+        width: 960px;
+        overflow: hidden;
     }
     .pagination{
         position: absolute;
@@ -281,4 +381,11 @@
         height: 80px;
     }
     
+
+    .el-checkbox+.el-checkbox{
+        margin-left: 0
+    }
+    .el-checkbox{
+        margin-right: 30px;
+    }
 </style>

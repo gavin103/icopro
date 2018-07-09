@@ -1,64 +1,64 @@
 <template>
     <div class="detail">
+        <div class="detail-title">
+            <h2><img :src="detail.smallImg" alt="">{{detail.icoTitle}}</h2>
+            <p>{{detail.icoDescription}}</p>
+        </div>
         <div class="detail-summary">
-            <div class="detail-summary-title">
-                <h2>title</h2>
-                <p>一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述一句话描述</p>
+            <div class="detail-summary-img">
+                <img :src="detail.largeImg" alt="">
             </div>
-
-            <el-card shadow="hover" class="detail-summary-card clearfix">
-                <div class="detail-summary-img">
-                    <img src="https://img.alicdn.com/imgextra/i3/2203660023/TB2ZvI4kXXXXXX3XpXXXXXXXXXX_!!2203660023.jpg" alt="">
-                </div>
-                <div class="detail-summary-card-info">
-                    <div class="detail-summary-times">
-                        <p><b>开始日期：</b>2月3日</p>
-                        <p><b>结束日期：</b>3月3日</p>
-                    </div>
-                    <div class="detail-summary-process">
-                        <div>
-                        <p><b>时间进度：</b></p>
-                        <el-progress type="circle" :percentage="25"></el-progress>
-                        </div>
-                    </div>
-                </div>
-            </el-card>
+            <div class="detail-summary-info">
+                <section>
+                    <h3>开始时间</h3>
+                    <p>{{detail.startTime}}</p>
+                </section>
+                <section>
+                    <h3>结束时间</h3>
+                    <p>{{detail.endTime}}</p>
+                </section>
+                <section>
+                    <h3>等级</h3>
+                    <span :class="rateLevelClass"></span>
+                </section>
+            </div>
         </div>
-        <div class="detail-description">
-              <el-table
-                :data="tableData"
-                stripe
-                style="width: 50%"
-                :show-header=false>
-                <el-table-column
-                prop="name"
-                label="姓名"
-                width="180">
-                </el-table-column>
-                <el-table-column
-                prop="address"
-                label="地址">
-                </el-table-column>
-            </el-table>
-            <el-table
-                :data="tableData2"
-                stripe
-                style="width: 50%"
-                :show-header=false>
-                <el-table-column
-                prop="name"
-                label="姓名"
-                width="180">
-                </el-table-column>
-                <el-table-column
-                prop="address"
-                label="地址">
-                </el-table-column>
-            </el-table>
-        </div>
-        <div class="detail-memo">
-
-        </div>
+        <el-tabs type="border-card">
+        <el-tab-pane label="众筹细节" class="detail-description detail-content">
+                <el-table
+                    :data="tableData"
+                    stripe
+                    style="width: 50%"
+                    :show-header=false>
+                    <el-table-column
+                    prop="name"
+                    label="属性"
+                    width="180">
+                    </el-table-column>
+                    <el-table-column
+                    prop="value"
+                    label="值">
+                    </el-table-column>
+                </el-table>
+                <el-table
+                    :data="tableData2"
+                    stripe
+                    style="width: 50%"
+                    :show-header=false>
+                    <el-table-column
+                    prop="name"
+                    label="属性"
+                    width="180">
+                    </el-table-column>
+                    <el-table-column
+                    prop="value"
+                    label="值">
+                    </el-table-column>
+                </el-table>
+        </el-tab-pane>
+        <el-tab-pane label="白皮书" class="detail-content">{{this.detail.whitepaper}}</el-tab-pane>
+        <el-tab-pane label="评级" class="detail-content">{{this.detail.rating}}</el-tab-pane>
+        </el-tabs>
     </div>
 </template>
 
@@ -67,43 +67,39 @@ import Axios from 'axios';
   export default {
     data() {
       return {
+          detail:{},
+          rateLevelClass:"",
         tableData: [{
           name: '众筹时间',
-          address: '-'
+          value: '-'
         }, {
           name: '价格',
-          address: ' 1517 弄'
+          value: '-'
         }, {
           name: '开发进度',
-          address: ' 1519 弄'
+          value: '-'
         }, {
           name: '项目类型',
-          address: ' 1516 弄'
+          value: '-'
         }, {
           name: '众筹硬顶',
-          address: ' 1516 弄'
-        }, {
-          name: '国家',
-          address: ' 1516 弄'
+          value: '-'
         }],
         tableData2: [{
           name: '销售比例',
-          address: ' 1516 弄'
+          value: '-'
         },{
           name: '实名认证',
-          address: '-'
+          value: '-'
         }, {
           name: '接收代币',
-          address: ' 1517 弄'
+          value: '-'
         }, {
           name: '网站',
-          address: ' 1519 弄'
+          value: '-'
         }, {
-          name: '白皮书',
-          address: ' 1516 弄'
-        }, {
-          name: '评级',
-          address: ' 1516 弄'
+          name: '国家',
+          value: '-'
         }]
       }
     },
@@ -117,6 +113,54 @@ import Axios from 'axios';
                 .then(res=>res.data)
                 .then(data=>{
                     console.log(data);
+                    if(data.code ==1&&data.datas){
+                        this.detail = data.datas.detailInfo||{};
+                        switch(this.detail.ratingLevel){
+                            case "1":
+                                this.rateLevelClass = "rateLevelA";
+                                break;
+                            case "2":
+                                this.rateLevelClass = "rateLevelB";
+                                break;  
+                            case "3":
+                                this.rateLevelClass = "rateLevelC";
+                                break;   
+                        }
+                        this.tableData=[{
+                            name: '众筹时间',
+                            value: this.detail.publicTime||"-"
+                            }, {
+                            name: '价格',
+                            value: this.detail.price||"-"
+                            }, {
+                            name: '开发进度',
+                            value: this.detail.devPhase||"-"
+                            }, {
+                            name: '项目类型',
+                            value: this.detail.classification||"-"
+                            }, {
+                            name: '众筹硬顶',
+                            value: this.detail.hardCap||"-"
+                        }];
+                        this.tableData2=[{
+                            name: '销售比例',
+                            value: this.detail.sellRate?(this.detail.sellRate*100+"%"):'-'
+                            },{
+                            name: '实名认证',
+                            value: this.detail.kyc||'-'
+                            }, {
+                            name: '接收代币',
+                            value: this.detail.tokenReceive||'-'
+                            }, {
+                            name: '网站',
+                            value: this.detail.website||'-'
+                            }, {
+                            name: '国家',
+                            value: this.detail.nationality||"-"
+                        }]
+                    }else{
+                        console.log(data.msg)
+                    }
                 })
       }
     }
@@ -134,27 +178,79 @@ import Axios from 'axios';
         position: relative;
         padding: 50px;
     }
-    .detail-summary-title{
-        margin-bottom: 12px;
+    .detail-title{
+        margin-bottom: 36px;
     }
-    .detail-summary-title h2{
+    .detail-title h2{
         font-size: 36px;
+        height: 100px;
+        line-height: 100px;
+        margin-bottom: 36px;
     }
-    .detail-summary-title p{
-        font-size: 16px;
+    .detail-title h2 img{
+        height: 100px;
+        width: 100px;
+        border-radius: 50%;
+        vertical-align: middle;
+        margin-right: 36px;
     }
-    .detail-summary-card{
+    .detail-title p{
+        font-size: 18px;
+        word-wrap:break-word; 
+        word-break:break-all;
+    }
+    .detail-summary{
         display: flex;
+        justify-content: space-between;
+        margin-bottom: 36px;
+    }
+    .detail-summary>div{
+        height: 400px;
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
     }
     .detail-summary-img{
-        float: left;
         width: 660px;
     }
     .detail-summary-img img{
-        width: 100%
+        width: 100%;
+        height: 100%;
     }
-    .detail-summary-card-info{
-        float: right;
-        width: 200px;
+    .detail-summary-info{
+        width: 320px;
+        padding: 42px 24px;
+    }
+    .detail-summary-info h3{
+        font-size: 20px;
+        font-weight: 900;
+        color: #999;
+        text-align: center;
+        margin-bottom: 12px;
+    }
+    .detail-summary-info p{
+        margin-bottom: 16px;
+        font-size: 18px;
+        text-align: center;
+    }
+    .detail-summary-info span{
+        margin: 0 auto;
+        display: block;
+        width: 100px;
+        height: 100px;
+        background-size: cover;
+    }
+    .rateLevelA{
+        background: url("http://47.104.31.231/image/static/levela.png") no-repeat;
+    }
+    .rateLevelB{
+        background: url("http://47.104.31.231/image/static/levelb.png") no-repeat;
+    }
+    .rateLevelC{
+        background: url("http://47.104.31.231/image/static/levelc.png") no-repeat;
+    }
+    .detail-description{
+        display: flex;
+    }
+    .detail-content{
+        min-height: 300px;
     }
 </style>

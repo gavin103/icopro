@@ -1,8 +1,8 @@
 <template>
   <section class="home">
     <el-carousel indicator-position="outside">
-      <el-carousel-item v-for="item in 4" :key="item">
-        <h3>{{ item }}</h3>
+      <el-carousel-item v-for="b in banners" :key="b.index" class="home-banner">
+        <img :src="b" alt="">
       </el-carousel-item>
     </el-carousel>
     <div class="hot-list">
@@ -10,11 +10,11 @@
         热门ICO推荐
       </h2>
       <el-row :gutter="12">
-        <el-col :span="6" v-for="(item,index) in hotList" :key="index">
+        <el-col :span="8" v-for="(item,index) in hotList" :key="index">
           <el-card shadow="hover" :body-style="{height:'291px', padding:'0px'}">
-            <img :src="item.imgSrc" :alt="item.band" class="ico-img">
-            <h3 class="ico-band">{{item.band}}</h3>
-            <p class="ico-dis">{{item.discription}}</p>
+            <router-link :to="{name:'Detail',params:{id:item.icoId}}"><img :src="item.largeImg" :alt="item.icoTitle" class="ico-img"></router-link>
+            <h3 class="ico-band">{{item.icoTitle}}</h3>
+            <p class="ico-dis">{{item.icoDescription}}</p>
           </el-card>
         </el-col>
       </el-row>
@@ -26,7 +26,7 @@
 </template>
 
 <script>
-  
+  import Axios from 'axios';
   export default {
     name:'home',
     components: {
@@ -34,37 +34,43 @@
     },
     data() {
       return {
-        hotList:[
-          {
-            imgSrc:"https://icobench.com/images/icos/logos/sharering.jpg",
-            star:4,
-            discription:"The world’s first trusted token for sharing services. One way to pay for sharing ever",
-            band:"ShareRing",
-            endTime:"1530008000000"
-          },
-          {
-            imgSrc:"https://icobench.com/images/icos/logos/sharering.jpg",
-            star:4,
-            discription:"The world’s first trusted token for sharing services. One way to pay for sharing ever",
-            band:"ShareRing",
-            endTime:"1530008000000"
-          },
-          {
-            imgSrc:"https://icobench.com/images/icos/logos/sharering.jpg",
-            star:4,
-            discription:"The world’s first trusted token for sharing services. One way to pay for sharing ever",
-            band:"ShareRing",
-            endTime:"1530008000000"
-          },
-          {
-            imgSrc:"https://icobench.com/images/icos/logos/sharering.jpg",
-            star:4,
-            discription:"The world’s first trusted token for sharing services. One way to pay for sharing ever",
-            band:"ShareRing",
-            endTime:"1530008000000"
-          }
-        ]
+        banners:[
+          "http://47.104.31.231/image/static/Banner1.png",
+          "http://47.104.31.231/image/static/Banner2.png",
+          "http://47.104.31.231/image/static/banner3.png",
+          "http://47.104.31.231/image/static/banner4.jpg",
+        ],
+        hotList:[]
       }
+    },
+    mounted() {
+        this.getIcoList();
+    },
+    methods: {
+      getIcoList(){
+        this.loading = true;
+        //let url = "http://127.0.0.1:8888/api/getlist"; //本地测试
+        let url = "http://gavin.frpgz1.idcfengye.com/api/getlist"; //线上环境
+        Axios.get(url)
+        .then(res=>res.data)
+        .then(data=>{
+            this.loading = false;
+            if(data.code == 1){
+              console.log(data);
+                if(data.datas && data.datas.icosList){
+                    this.hotList = data.datas.icosList;
+                    if(this.hotList.length>4){
+                      this.hotList.length = 4;
+                    }
+                }
+            }else{
+                Message.error({
+                    message: data.msg||"请求失败",
+                    center: true
+                });
+            }  
+        })
+      },
     }
   }
 </script>
@@ -88,7 +94,11 @@
   }
   .home{
       background-color: #fff;
+      padding-bottom: 36px;
       margin-bottom: 72px;
+  }
+  .home-banner img{
+    width: 100%;
   }
   .title{
     padding-top: 18px;
