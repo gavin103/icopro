@@ -109,7 +109,8 @@ import Axios from 'axios';
     },
     methods: {
       getDetail(id) {
-          Axios.get(`http://localhost:8888/api/getdetail?id=${id}`)
+          let url = "http://gavin.frpgz1.idcfengye.com/api/getdetail";
+          Axios.get(`${url}?id=${id}`)
                 .then(res=>res.data)
                 .then(data=>{
                     console.log(data);
