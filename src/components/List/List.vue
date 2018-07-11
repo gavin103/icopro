@@ -6,13 +6,7 @@
                     <el-button type="primary" slot="append" icon="el-icon-search" @click="handleSearch">搜索</el-button>
                 </el-input>
             </li>
-            <li class="search-class">
-                <span class="search-item">通证分类:</span>
-                <el-checkbox-group class="search-checkbox" v-model="checkedClarify" @change="handleCheckedClarify">
-                    <el-checkbox v-for="item in clarification" :label="item.code" :key="item.code">{{item.name}}</el-checkbox>
-                </el-checkbox-group>
-            </li>
-            <li>
+            <li class="search-time">
                 <span class="search-item">当前状态:</span>
                 <el-radio-group v-model="curStatus" @change="changeTimeStatus">
                     <el-radio :label="0">全部</el-radio>
@@ -20,6 +14,12 @@
                     <el-radio :label="2">进行中</el-radio>
                     <el-radio :label="3">已经结束</el-radio>
                 </el-radio-group>
+            </li>
+            <li class="search-class">
+                <span class="search-item">通证分类:</span>
+                <el-checkbox-group class="search-checkbox" v-model="checkedClarify" @change="handleCheckedClarify">
+                    <el-checkbox v-for="item in clarification" :label="item.code" :key="item.code">{{item.name}}</el-checkbox>
+                </el-checkbox-group>
             </li>
         </ul>
         <div class="list-wrap">
@@ -34,17 +34,17 @@
                     <img :src="ico.smallImg" alt="">
                 </router-link>
                 <div class="card-info">
-                    <h3><span class="card-info-rocket"></span>{{ico.icoTitle}}</h3>
+                    <h3>{{ico.icoTitle}}</h3>
                     <p>{{ico.icoDescription}}</p>
                 </div>
                 <div class="card-rate">
-                    <img src="http://47.104.31.231/image/static/levela.png" alt="">
+                    <img :src="ico.rateLevelImg" alt="">
                 </div>
                 <div class="card-end">
-                    {{ico.endTime}}
+                    <p>{{ico.endTime.split(" ")[0]}}</p>
                 </div>
                 <div class="card-start">
-                    {{ico.startTime}}
+                    <p>{{ico.startTime.split(" ")[0]}}</p>
                 </div>
             </el-card>
         </div>
@@ -106,6 +106,12 @@
                     },{
                         code:'c15',
                         name:'侧链'
+                    },{
+                        code:'c16',
+                        name:'协议'
+                    },{
+                        code:'c17',
+                        name:'软件'
                     }
                 ];
     export default {
@@ -144,6 +150,19 @@
                     if(data.code == 1){
                         if(data.datas && data.datas.icosList){
                             const icosList = data.datas.icosList;
+                            icosList.forEach(item=>{
+                                switch(item.ratingLevel){
+                                    case "1":
+                                        item.rateLevelImg = "http://47.104.31.231/image/static/levela.png";
+                                        break;
+                                    case "2":
+                                        item.rateLevelImg = "http://47.104.31.231/image/static/levelb.png";
+                                        break;  
+                                    case "3":
+                                        item.rateLevelImg = "http://47.104.31.231/image/static/levelc.png";
+                                        break;   
+                                }
+                            })
                             this.icosList = [...icosList];
                             this.allIcosList = [...icosList];
                         }
@@ -260,7 +279,7 @@
                 if(checked.length>0){
                     this.icosList=[];
                     this.allIcosList.forEach(ico=>{
-                        if(checked.includes(ico.classification)){
+                        if(checked.includes(ico.classificationCode)){
                             this.icosList.push(ico);
                         }
                     })
@@ -290,7 +309,9 @@
         width: 660px;
         margin-bottom: 15px;
     }
-    
+    .search-time{
+        margin-bottom: 12px;
+    }
     .search-item{
         display: inline-block;
         width: 100px;
@@ -350,15 +371,6 @@
         font-size: 18px;
 
     }
-    .card-info-rocket{
-        display: inline-block;
-        width: 18px;
-        height: 18px;
-        margin-right: 1em;
-        background: url(http://47.104.31.231/image/static/rocket.png) no-repeat;
-        background-size: cover;
-    }
-
     .card-info p{
         height: 60px;
     }
@@ -386,6 +398,6 @@
         margin-left: 0
     }
     .el-checkbox{
-        margin-right: 30px;
+        width: 120px;
     }
 </style>

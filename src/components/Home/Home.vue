@@ -1,6 +1,6 @@
 <template>
   <section class="home">
-    <el-carousel indicator-position="outside">
+    <el-carousel class="home-banner-wrap" indicator-position="outside">
       <el-carousel-item v-for="b in banners" :key="b.index" class="home-banner">
         <img :src="b" alt="">
       </el-carousel-item>
@@ -10,17 +10,37 @@
         热门ICO推荐
       </h2>
       <el-row :gutter="12">
-        <el-col :span="8" v-for="(item,index) in hotList" :key="index">
+        <el-col :span="6" v-for="(item,index) in hotList" :key="index">
           <el-card shadow="hover" :body-style="{height:'291px', padding:'0px'}">
             <router-link :to="{name:'Detail',params:{id:item.icoId}}"><img :src="item.largeImg" :alt="item.icoTitle" class="ico-img"></router-link>
-            <h3 class="ico-band">{{item.icoTitle}}</h3>
+            <h3 class="ico-band"> <span></span> {{item.icoTitle}}</h3>
             <p class="ico-dis">{{item.icoDescription}}</p>
           </el-card>
         </el-col>
       </el-row>
     </div>
-    <div class="policy-list">
-
+    <div class="list-wrap">
+        <section class="list-rate">
+            <h2>币种列表</h2>
+        </section>
+        <el-card v-for="ico in icosList" :key="ico.icoId" shadow="hover" class="list-card clearfix">
+            <router-link class="card-img" :to="{name:'Detail',params:{id:ico.icoId}}" tag="div">
+                <img :src="ico.smallImg" alt="">
+            </router-link>
+            <div class="card-info">
+                <h3>{{ico.icoTitle}}</h3>
+                <p>{{ico.icoDescription}}</p>
+            </div>
+            <div class="card-rate">
+                <img :src="ico.rateLevelImg" alt="">
+            </div>
+            <div class="card-end">
+                <p>{{ico.endTime.split(" ")[0]}}</p>
+            </div>
+            <div class="card-start">
+                <p>{{ico.startTime.split(" ")[0]}}</p>
+            </div>
+        </el-card>
     </div>
   </section>
 </template>
@@ -40,7 +60,8 @@
           "http://47.104.31.231/image/static/banner3.png",
           "http://47.104.31.231/image/static/banner4.jpg",
         ],
-        hotList:[]
+        hotList:[],
+        icosList:[]
       }
     },
     mounted() {
@@ -56,11 +77,27 @@
         .then(data=>{
             this.loading = false;
             if(data.code == 1){
-              console.log(data);
                 if(data.datas && data.datas.icosList){
-                    this.hotList = data.datas.icosList;
+                    data.datas.icosList.forEach(item=>{
+                        switch(item.ratingLevel){
+                            case "1":
+                                item.rateLevelImg = "http://47.104.31.231/image/static/levela.png";
+                                break;
+                            case "2":
+                                item.rateLevelImg = "http://47.104.31.231/image/static/levelb.png";
+                                break;  
+                            case "3":
+                                item.rateLevelImg = "http://47.104.31.231/image/static/levelc.png";
+                                break;   
+                        }
+                    })
+                    this.hotList = [...data.datas.icosList];
                     if(this.hotList.length>4){
                       this.hotList.length = 4;
+                    }
+                    this.icosList = [...data.datas.icosList];
+                    if(this.hotList.length>12){
+                      this.hotList.length = 12;
                     }
                 }
             }else{
@@ -97,8 +134,17 @@
       padding-bottom: 36px;
       margin-bottom: 72px;
   }
+  .home-banner-wrap{
+    width: 1120px;
+    margin: 0 auto;
+  }
+  .home-banner{
+    width: 100%;
+    height: 281px;
+  }
   .home-banner img{
     width: 100%;
+    height: 100%;
   }
   .title{
     padding-top: 18px;
@@ -118,16 +164,93 @@
   .hot-list .ico-band{
     height: 30px;
     line-height: 30px;
-    margin-left: 8px;
+    margin: 0 0 12px 18px;
+  }
+  .hot-list .ico-band span{
+    height: 30px;
+    width: 30px;
+    display: inline-block;
+    background: url(http://47.104.31.231/image/static/rocket.png) no-repeat;
+    background-size:100% 100%;
+
   }
   .hot-list .ico-dis{
-    margin: 0 8px;
+    padding: 0 16px;
+    width: 268px;
+    max-height: 72px;
     font-size: 14px;
+    word-wrap: break-word;
     overflow : hidden;
     text-overflow: ellipsis;
     display: -webkit-box;
-    -webkit-line-clamp: 2;
+    -webkit-line-clamp: 4;
     -webkit-box-orient: vertical;
-    text-align: justify;
   }
+    .list-wrap{
+        width: 1160px;
+        margin: 0 auto;
+        padding: 18px 18px 88px;
+    }
+    .list-rate{
+        margin-bottom: 12px;
+    }
+    
+    .list-rate h2{
+        text-align: center;
+    }
+    .list-rate .list-rate-btn{
+        float: right;
+        width: 110px;
+    }
+    .list-card{
+        height: 140px;
+        margin-bottom: 12px;
+    }
+    .card-img{
+        width: 100px;
+        height: 100px;
+        margin-right: 20px;
+        float: left;
+    }
+    .card-img img{
+        width: 100%;
+        height: 100%;
+    }
+    .card-info{
+        float: left;
+        width: 440px;
+    }
+    .card-info h3{
+        font-size: 18px;
+
+    }
+    .card-info p{
+        height: 60px;
+    }
+    .card-start, .card-end, .card-rate{
+        width: 150px;
+        height: 100%;
+        text-align: center;
+        line-height: 100px;
+        float: right;
+    }
+    .card-end, .card-start{
+        width: 100px;
+    }
+    .card-rate{
+        width: 140px;
+        padding-top: 12px;
+    }
+    .card-rate img{
+        width: 80px;
+        height: 80px;
+    }
+    
+
+    .el-checkbox+.el-checkbox{
+        margin-left: 0
+    }
+    .el-checkbox{
+        width: 120px;
+    }
 </style>
