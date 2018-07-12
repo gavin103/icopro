@@ -300,6 +300,7 @@
         text-align: left;
         font-size: 14px;
         position: relative;
+        overflow: hidden;
     }
     .search-wrap{
         border-bottom: 5px solid #f2f2f2;
@@ -336,6 +337,7 @@
     }
     .list-wrap{
         padding: 18px 18px 88px;
+        width: 1088px;
     }
     .list-rate{
         margin-bottom: 12px;
