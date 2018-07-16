@@ -1,10 +1,18 @@
 <template>
   <section class="home">
-    <el-carousel class="home-banner-wrap" indicator-position="outside">
-      <el-carousel-item v-for="b in banners" :key="b.index" class="home-banner">
-        <img :src="b" alt="">
-      </el-carousel-item>
-    </el-carousel>
+    <div class="home-banner-wrap">
+        <div class="home-banner">
+            <div class="home-banner-title">            
+                <h2>B.Best 杨帆起航</h2>
+                <p><a href="/register">注册</a>&nbsp;&nbsp;<span>| 已经注册？</span>&nbsp;<a href="/login">登录B.BEST</a> </p>
+            </div>
+            <div class="home-banner-image">
+                <a href="#" v-for="(pic,i) in banners" :key="i">
+                    <img :src="pic" :alt="pic">
+                </a>
+            </div>
+        </div>
+    </div>
     <div class="hot-list">
       <h2 class="title">
         热门ICO推荐
@@ -135,13 +143,43 @@
       margin-bottom: 72px;
   }
   .home-banner-wrap{
-    width: 1120px;
-    margin: 0 auto;
+      background: #161616;
+      padding: 48px 0;
   }
   .home-banner{
-    width: 100%;
-    height: 281px;
+    width: 1120px;
+    margin: 0 auto;
+    height: 236px;
   }
+  .home-banner-title{
+    text-align: center;
+    margin-bottom: 30px;
+  }
+  .home-banner-title h2{
+      color: #F0B90B;
+      margin-bottom: 18px;
+  }
+  .home-banner-title p a{
+      color: #ffffff;
+      font-weight: 900;
+  }
+   .home-banner-title p span{
+       color: #999;
+   }
+   .home-banner-image{
+       height: 130px;
+       display: flex;
+       justify-content: space-between;
+   }
+   .home-banner-image a{
+       width: 270px;
+       height: 100%;
+   }
+   .home-banner-image a img{
+       width: 100%;
+       height: 100%;
+   }
+
   .home-banner img{
     width: 100%;
     height: 100%;
