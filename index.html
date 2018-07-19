@@ -124,37 +124,85 @@
       width: 1120px;
       margin: 0 auto;
       display: flex;
-      justify-content: space-between;
-      padding-top: 32px;
+      padding-top: 24px;
       color: #fff
     }
-
+    .footer .foot-list li h4{
+      margin-bottom: 12px;
+    }
+    .footer .foot-list li p{
+      font-size: 14px;
+      margin-bottom: 8px;
+      color: #eee;
+    }
+    .footer .foot-list li p a{
+      color: #eee;
+      text-decoration: none;
+    }
+    .footer .foot-list-item1,
+    .footer .foot-list-item2{
+      width: 230px;
+    }
+    .footer .foot-list-item3{
+      flex: 1;
+    }
+    .footer .foot-list-item3 h4{
+      width: 120px;
+      text-align: center;
+    }
+    .footer .foot-list-item3 p{
+      width: 120px;
+      display: flex;
+      justify-content: space-between;
+    }
+    .footer .foot-list-item3 p i{
+      font-size: 1.5em;
+    }
+    .footer .foot-list-item4 p{
+      height: 2em;
+      line-height: 2em;
+    }
+    .footer .foot-list-item4 input,
+    .footer .foot-list-item4 input:focus{
+      border: 0px solid transparent;
+      margin: 0;
+      padding: 0;
+      height: 1.5em;
+      line-height: 1.5em;
+    }
   </style>
+  <link rel="stylesheet" href="//at.alicdn.com/t/font_750338_rofqtjxs4if.css">
 </head>
 
 <body>
   <div id="app"></div>
   <div class="footer">
       <ul class="foot-list">
-          <li>
-              <p>友情链接</p>
-              <p>ICObench</p>
-              <p>ICOdrops</p>
-              <p>友情链接</p>
+          <li class="foot-list-item1">
+              <h4>关于我</h4>
           </li>
-          <li>
-              <p>关注我们</p>
-              <p>微博</p>
-              <p>公众号</p>
+          <li class="foot-list-item2">
+              <h4>关于你</h4>
+              <p><a href="#">隐私条款</a></p>
+              <p><a href="#">用户协议</a></p>
           </li>
-          <li>
-              <p>联系我们</p>
-              <p>邮箱</p>
-              <p>电话</p>
+          <li class="foot-list-item3">
+              <h4>社区</h4>
+              <p>
+                <a href="#"><i class="iconfont icon-weixin"></i></a>
+                <a href="#"><i class="iconfont icon-weibo"></i></a>
+                <a href="#"><i class="iconfont icon-twitter"></i></a>
+              </p>
+              <div></div>
+              <div></div>
+          </li>
+          <li class="foot-list-item4">
+            <h4>订阅</h4>
+            <p><input type="email"><button>订阅</button></p>
           </li>
       </ul>
       <div class="foot-info">
-          <p>©Copyright2018 ke.com版权所有</p>
+          <p>©Copyright2018 b.best版权所有</p>
       </div>
   </div>
 </body>
