@@ -31,17 +31,15 @@ export default {
     height: 50px;
     line-height: 50px;
     font-size: 16px;
-    color: #7f8c8d;
+    color: #FBFBFB;
     cursor: pointer;
-    padding: 0 20px;
+    margin-left: 36px;
 }
 .aside-nav-list .active{
-    color: #FBFBFB;
+    color: #F0B90B;
 }
 .aside-nav-list *:hover{
-    /* background: rgba(176, 175, 168, 0.3); */
-    background-color: rgba(0,0,0,0.6);
-    color: #eee;
+    color: #F0B90B;
 }
             
 </style>

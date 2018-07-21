@@ -4,7 +4,6 @@
         <div class="home-banner">
             <div class="home-banner-title">            
                 <h2>B.Best 杨帆起航</h2>
-                <p><a href="/register">注册</a>&nbsp;&nbsp;<span>| 已经注册？</span>&nbsp;<a href="/login">登录B.BEST</a> </p>
             </div>
             <div class="home-banner-image">
                 <a href="#" v-for="(pic,i) in banners" :key="i">
@@ -172,7 +171,7 @@
        justify-content: space-between;
    }
    .home-banner-image a{
-       width: 270px;
+       width: 256px;
        height: 100%;
    }
    .home-banner-image a img{
