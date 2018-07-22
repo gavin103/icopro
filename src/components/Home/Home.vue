@@ -241,8 +241,8 @@
     background: url(http://47.104.31.231/image/static/rocket.png) no-repeat;
     background-size:100% 100%;
     position: absolute;
-    right: 10px;
-    top: 0;
+    right: 8px;
+    top: -140px;
   }
   .hot-list .ico-dis{
     padding: 0 16px;
