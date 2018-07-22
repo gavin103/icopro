@@ -4,8 +4,8 @@
             <router-link to="/icolist" tag="li" active-class="active" class="aside-nav-list">
                 ICOs
             </router-link>
-            <router-link to="/information" tag="li" active-class="active" class="aside-nav-list">
-                关于我们
+            <router-link to="/news" tag="li" active-class="active" class="aside-nav-list">
+                项目新闻
             </router-link>
             <router-link to="/profile" tag="li" active-class="active" class="aside-nav-list">
                 个人中心

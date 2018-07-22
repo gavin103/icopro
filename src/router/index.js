@@ -42,6 +42,11 @@ const Crm = resolve => {
     resolve(require('../components/Crm/Crm.vue'));
   });
 };
+const News = resolve => {
+  require.ensure(['../components/News/News.vue'], () => {
+    resolve(require('../components/News/News.vue'));
+  });
+};
 const Error404 = resolve => {
   require.ensure(['../components/404.vue'], () => {
       resolve(require('../components/404.vue'));
@@ -81,6 +86,11 @@ const router = new Router({
       // meta: {
       //   requiresAuth: true
       // }
+    },
+    {
+      path: '/news',
+      name: 'News',
+      component: News,
     },
     {
       path: '/login',
