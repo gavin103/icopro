@@ -277,6 +277,7 @@
     .list-card{
         height: 140px;
         margin-bottom: 12px;
+        cursor: pointer;
     }
     .list-card:hover{
         box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);

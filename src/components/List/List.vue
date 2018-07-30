@@ -30,9 +30,10 @@
                 <el-button type="text" class="list-rate-btn" @click="rangeByStart">开始时间<i :class="rangeByStartClass"></i></el-button>
             </section>
             <el-card v-for="ico in icosList" :key="ico.icoId" shadow="hover" class="list-card clearfix">
-                <router-link class="card-img" :to="{name:'Detail',params:{id:ico.icoId}}" tag="div">
+                <router-link  class="card-link" :to="{name:'Detail',params:{id:ico.icoId}}" tag="div">
+                <div class="card-img">
                     <img :src="ico.smallImg" alt="">
-                </router-link>
+                </div>
                 <div class="card-info">
                     <h3>{{ico.icoTitle}}</h3>
                     <p>{{ico.icoDescription}}</p>
@@ -46,6 +47,7 @@
                 <div class="card-start">
                     <p>{{ico.startTime.split(" ")[0]}}</p>
                 </div>
+                </router-link>
             </el-card>
         </div>
         <div class="pagination">
@@ -354,6 +356,10 @@
     .list-card{
         height: 140px;
         margin-bottom: 12px;
+        cursor: pointer;
+    }
+    .list-card:hover{
+        box-shadow: 0 2px 12px 0 rgba(0,0,0,.1);
     }
     .card-img{
         width: 100px;
@@ -362,6 +368,12 @@
         float: left;
     }
     .card-img img{
+        width: 100%;
+        height: 100%;
+    }
+    .card-link{
+        cursor: pointer;
+        display: block;
         width: 100%;
         height: 100%;
     }
