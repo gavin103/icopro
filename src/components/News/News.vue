@@ -52,7 +52,9 @@
                 <el-tab-pane label="动态" name="second">
                     <el-card class="box-card">
                         <div>
-                            内容
+                            B站视频
+                            <br>
+                            <iframe src="http://player.bilibili.com/player.html?aid=2388044&cid=3736324&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="500" height="300"> </iframe>
                         </div>
                     </el-card>
                 </el-tab-pane>
@@ -74,7 +76,7 @@
                 </ul>
             </div>
             <div class="news-chat">
-                聊天室区域
+                聊天室尚未开通
             </div>
         </div>
     </div>
