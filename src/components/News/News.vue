@@ -57,7 +57,7 @@
                             <iframe src="http://player.bilibili.com/player.html?aid=2388044&cid=3736324&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="500" height="300"> </iframe>
                         </div>
                     </el-card>
-                </el-tab-pane>
+                </el-tab-pane> 
             </el-tabs>
         </div>
         <div class="news-side">

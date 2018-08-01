@@ -1,12 +1,14 @@
 <template>
   <div class="hello">
-    <ul>
-      <li v-for="(item, index) in users" :key="item._id">
-        {{ index + 1 }}.{{ item.username }}
-        <el-button @click="del_user(index, $event)">删除</el-button>
-      </li>
-    </ul>
-    <el-button type="primary" @click="logout()">登出</el-button>
+    <section>
+      <p v-for="item in users" :key="item._id" class="users-list">
+        B.Best欢迎您 {{ item.username }}
+        <!-- <el-button @click="del_user(index, $event)">删除</el-button> -->
+      </p>
+    </section>
+    <section>
+      <el-button type="primary" @click="logout()">登出</el-button>
+    </section>
   </div>
 </template>
 
@@ -70,21 +72,18 @@ export default {
 
 <!-- Add "scoped" attribute to limit CSS to this component only -->
 <style scoped>
-h1, h2 {
-  font-weight: normal;
-}
-
-ul {
-  list-style-type: none;
-  padding: 0;
-}
-
-li {
-  display: inline-block;
-  margin: 0 10px;
-}
 
 a {
   color: #42b983;
+}
+section{
+  text-align: center;
+  padding: 6px 0;
+}
+.users-list{
+  color: #666;
+  font-size: 24px;
+  text-align: center;
+  padding: 6px 0;
 }
 </style>

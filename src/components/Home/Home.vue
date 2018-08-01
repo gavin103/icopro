@@ -16,6 +16,7 @@
       <h2 class="title">
           热门ICO推荐
       </h2>
+
       <el-row :gutter="12">
         <el-col :span="6" v-for="(item,index) in hotList" :key="index">
           <el-card class="hot-list-card" :body-style="{height:'291px', padding:'0px'}">
@@ -30,6 +31,12 @@
         <h2 class="title">
             币种列表
         </h2>
+        <el-row class="list-sort">
+            <el-button class="list-sort-item" autofocus @click="getAll">全部</el-button>
+            <el-button class="list-sort-item" @click="getComing">即将开始</el-button>
+            <el-button class="list-sort-item" @click="getOnGoing">进行中</el-button>
+            <el-button class="list-sort-item" @click="getEnded">已经结束</el-button>
+        </el-row>
         <section class="list-rate">
             <el-button type="text" class="list-rate-btn">LOGO</el-button>
             <el-button style="flex:1;text-align:left;padding-left:15px" type="text" class="list-rate-btn">项目描述</el-button>
@@ -68,6 +75,7 @@
 
 <script>
   import Axios from 'axios';
+  import api from '../../axios.js';
   export default {
     name:'home',
     components: {
@@ -82,53 +90,100 @@
           "http://47.104.31.231/image/static/banner4.jpg",
         ],
         hotList:[],
-        icosList:[]
+        icosList:[],
+        allIcosList:[],
       }
     },
+
     mounted() {
         this.getIcoList();
     },
     methods: {
-      getIcoList(){
-        this.loading = true;
-        //let url = "http://127.0.0.1:8888/api/getlist"; //本地测试
-        let url = "http://gavin.frpgz1.idcfengye.com/api/getlist"; //线上环境
-        Axios.get(url)
-        .then(res=>res.data)
-        .then(data=>{
-            this.loading = false;
-            if(data.code == 1){
-                if(data.datas && data.datas.icosList){
-                    data.datas.icosList.forEach(item=>{
-                        switch(item.ratingLevel){
-                            case "1":
-                                item.rateLevelImg = "http://47.104.31.231/image/static/levela.png";
-                                break;
-                            case "2":
-                                item.rateLevelImg = "http://47.104.31.231/image/static/levelb.png";
-                                break;  
-                            case "3":
-                                item.rateLevelImg = "http://47.104.31.231/image/static/levelc.png";
-                                break;   
+        getIcoList(){
+            this.loading = true;
+            //let url = "http://127.0.0.1:8888/api/getlist"; //本地测试
+            let url = "http://gavin.frpgz1.idcfengye.com/api/getlist"; //线上环境
+            Axios.get(url)
+            .then(res=>res.data)
+            .then(data=>{
+                this.loading = false;
+                if(data.code == 1){
+                    if(data.datas && data.datas.icosList){
+                        data.datas.icosList.forEach(item=>{
+                            switch(item.ratingLevel){
+                                case "1":
+                                    item.rateLevelImg = "http://47.104.31.231/image/static/levela.png";
+                                    break;
+                                case "2":
+                                    item.rateLevelImg = "http://47.104.31.231/image/static/levelb.png";
+                                    break;  
+                                case "3":
+                                    item.rateLevelImg = "http://47.104.31.231/image/static/levelc.png";
+                                    break;   
+                            }
+                        })
+                        this.hotList = [...data.datas.icosList];
+                        if(this.hotList.length>4){
+                        this.hotList.length = 4;
                         }
-                    })
-                    this.hotList = [...data.datas.icosList];
-                    if(this.hotList.length>4){
-                      this.hotList.length = 4;
+                        this.allIcosList = [...data.datas.icosList];
+                        this.icosList = [...data.datas.icosList];
+                        if(this.icosList.length>15){
+                        this.icosList.length = 15;
+                        }
                     }
-                    this.icosList = [...data.datas.icosList];
-                    if(this.hotList.length>15){
-                      this.hotList.length = 15;
-                    }
-                }
-            }else{
-                Message.error({
-                    message: data.msg||"请求失败",
-                    center: true
-                });
-            }  
-        })
-      },
+                }else{
+                    Message.error({
+                        message: data.msg||"请求失败",
+                        center: true
+                    });
+                }  
+            })
+        },
+        changeTimeStatus(e){
+            const curTime = Date.parse(new Date());
+            switch(e){
+                case 0:
+                    this.icosList = [...this.allIcosList];
+                    this.icosList.length>15 && (this.icosList.length = 15);
+                    break;
+                case 1: //即将开始 curtTime < startTime
+                    this.icosList = this.allIcosList.filter(ico=>{
+                        let startTime = Date.parse(new Date(ico.startTime))
+                        return curTime<startTime;
+                    });
+                    this.icosList.length>15 && (this.icosList.length = 15);
+                    break;
+                case 2:
+                    this.icosList = this.allIcosList.filter(ico=>{
+                        let startTime = Date.parse(new Date(ico.startTime))
+                        let endTime = Date.parse(new Date(ico.endTime))
+                        return (curTime>startTime)&&(curTime<endTime);
+                    });
+                    this.icosList.length>15 && (this.icosList.length = 15);
+                    break;
+                case 3:
+                    this.icosList = this.allIcosList.filter(ico=>{
+                        let endTime = Date.parse(new Date(ico.endTime))
+                        return (curTime>endTime);
+                    });
+                    this.icosList.length>15 && (this.icosList.length = 15);
+                    break;                      
+            }
+
+        },
+        getAll(){
+            this.changeTimeStatus(0)
+        },
+        getComing(){
+            this.changeTimeStatus(1)
+        },
+        getOnGoing(){
+            this.changeTimeStatus(2)
+        },
+        getEnded(){
+            this.changeTimeStatus(3)
+        }
     }
   }
 </script>
@@ -344,7 +399,13 @@
         height: 80px;
     }
     
-
+    .list-sort-item{
+        border-radius: 20px;
+    }
+    .list-sort{
+        text-align: center;
+        margin-bottom: 18px;
+    }
     .el-checkbox+.el-checkbox{
         margin-left: 0
     }

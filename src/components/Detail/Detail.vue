@@ -148,7 +148,7 @@ import Axios from 'axios';
                             value: this.detail.sellRate?(this.detail.sellRate*100+"%"):'-'
                             },{
                             name: '实名认证',
-                            value: this.detail.kyc||'-'
+                            value: this.detail.kyc?(this.detail.kyc==0?'未认证':'已认证'):'-'
                             }, {
                             name: '接收代币',
                             value: this.detail.tokenReceive||'-'
