@@ -19,10 +19,11 @@
 </template>
 
 <script>
+import api from '../../axios.js'
 export default {
       
     data(){
-        return {users:''}
+        return {users:null}
     },
     mounted() {
         console.log(this.users)
