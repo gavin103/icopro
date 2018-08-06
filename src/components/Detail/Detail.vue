@@ -98,7 +98,7 @@ import Axios from 'axios';
           name: '网站',
           value: '-'
         }, {
-          name: '国家',
+          name: '发行国家',
           value: '-'
         }]
       }

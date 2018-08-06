@@ -14,49 +14,28 @@
             </ul>
             <el-tabs v-model="activeName" @tab-click="handleClick">
                 <el-tab-pane label="快讯" name="first">
-                    <section class="news-item">
-                        <h3>今日 7月22日</h3>
+                    <section v-for="item in quickNews" :key="item.id" class="news-item">
+                        <h3>发布时间：{{item.createTime|formatDate}}</h3>
                         <el-collapse v-model="activeNews">
-                        <el-collapse-item title="FCoin公告：7月20日、21日FT存在价格异动 存在市场恶意做空行为" name="1">
-                            <div class="news-content">FCoin发布公告称，FT/USDT、FT/BTC、FT/ETH交易对，2018年7月20日、2018年7月21日连续二个交易日价格跌幅累计超过20%，属于交易异常波动的情况。经过调查，发现FT价格遭到刻意打压（通过以诱导市场方向为目的的连续程序化交易），FT运营团队现已将相关数据上报FCoin平台，并报请FCoin平台采取措施限制相关恶意做空行为。</div>
-                        </el-collapse-item>
-                        <el-collapse-item title="FOne运作规则（保荐机构）公示" name="2">
-                            <div class="news-content">FCoin于今日凌晨发布FOne交易区保荐机构运作规则公示，公示显示：
-                            1.FCoin认证的保荐机构均可以在FOne申请以自己品牌命名的交易区（或多家保荐机构联合命名的交易区），在此专区内拥有上币权，运营权，及制定规则的权利，同时保荐机构也须对项目状态进行实时风险评估与处置。
-                            2.每个保荐机构将获得自己交易区所有币种交易手续费的10%作为其运营收入，该手续费按月返还给保荐机构。并且，FCoin也积极鼓励保荐机构将自己交易区的优秀币种申请转板，转板以后，保荐机构仍然享受该币种10%的手续费收入，即保荐机构上币可终身获得其交易手续费的10%。多家保荐机构联名的交易区，需指定一家作为主保荐机构，由其代为收取运营收入，再内部分配。
-                            3.若多家保荐机构申请上线同一币种，则需多家协商是否在多家的联合区统一首发。协商不成的，以项目方认定的保荐机构为准。
-                            4.FOne将于近期进行保荐项目统一首发，每个保荐机构的首发项目最多不超过5个，请保荐机构积极申请，保障首发项目质量。本次首发只支持ERC20币种。
-                            查看详情
-                            </div>
-                        </el-collapse-item>
-                        </el-collapse>
-                    </section>
-                    <section class="news-item">
-                        <h3>昨日 7月21日</h3>
-                        <el-collapse>
-                        <el-collapse-item title="FCoin公告：7月20日、21日FT存在价格异动 存在市场恶意做空行为" name="1">
-                            <div class="news-content">FCoin发布公告称，FT/USDT、FT/BTC、FT/ETH交易对，2018年7月20日、2018年7月21日连续二个交易日价格跌幅累计超过20%，属于交易异常波动的情况。经过调查，发现FT价格遭到刻意打压（通过以诱导市场方向为目的的连续程序化交易），FT运营团队现已将相关数据上报FCoin平台，并报请FCoin平台采取措施限制相关恶意做空行为。</div>
-                        </el-collapse-item>
-                        <el-collapse-item title="FOne运作规则（保荐机构）公示" name="2">
-                            <div class="news-content">FCoin于今日凌晨发布FOne交易区保荐机构运作规则公示，公示显示：
-                            1.FCoin认证的保荐机构均可以在FOne申请以自己品牌命名的交易区（或多家保荐机构联合命名的交易区），在此专区内拥有上币权，运营权，及制定规则的权利，同时保荐机构也须对项目状态进行实时风险评估与处置。
-                            2.每个保荐机构将获得自己交易区所有币种交易手续费的10%作为其运营收入，该手续费按月返还给保荐机构。并且，FCoin也积极鼓励保荐机构将自己交易区的优秀币种申请转板，转板以后，保荐机构仍然享受该币种10%的手续费收入，即保荐机构上币可终身获得其交易手续费的10%。多家保荐机构联名的交易区，需指定一家作为主保荐机构，由其代为收取运营收入，再内部分配。
-                            3.若多家保荐机构申请上线同一币种，则需多家协商是否在多家的联合区统一首发。协商不成的，以项目方认定的保荐机构为准。
-                            4.FOne将于近期进行保荐项目统一首发，每个保荐机构的首发项目最多不超过5个，请保荐机构积极申请，保障首发项目质量。本次首发只支持ERC20币种。
-                            查看详情
-                            </div>
+                        <el-collapse-item :title="item.newsTitle" name="1">
+                            <div class="news-content">{{item.newsDetail}}</div>
                         </el-collapse-item>
                         </el-collapse>
                     </section>
                 </el-tab-pane>
-                <el-tab-pane label="动态" name="second">
-                    <el-card class="box-card">
-                        <div>
-                            B站视频
-                            <br>
-                            <iframe src="http://player.bilibili.com/player.html?aid=2388044&cid=3736324&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="500" height="300"> </iframe>
-                        </div>
-                    </el-card>
+                <el-tab-pane label="新闻" name="second">
+                    <router-link 
+                        v-for="md in mdNews" 
+                        :key="md.md_id"
+                        :to="{name:'NewsDetail',params:{id:md.md_id}}" tag="div"
+                    >
+                        <el-card class="box-card" >
+                            <h3>{{md.title}}</h3>
+                            <p>{{md.summary}}</p>
+                            <!-- <iframe src="http://player.bilibili.com/player.html?aid=2388044&cid=3736324&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="500" height="300"> </iframe> -->
+                        </el-card>
+                    </router-link>
+
                 </el-tab-pane> 
             </el-tabs>
         </div>
@@ -84,6 +63,8 @@
 
 <script>
 import Axios from 'axios';
+import marked from 'marked';
+import _ from 'lodash';
   export default {
     data() {
       return {
@@ -139,15 +120,63 @@ import Axios from 'axios';
         searchItems:[
             'API','Network','快讯'
         ],
+        quickNews:[],
+        mdNews: [],
       };
+    },
+    filters: {
+      formatDate(s){
+        const t = new Date(s*1);
+        let d = '';
+        d += (t.getFullYear()+'年');
+        d += ((t.getMonth()+1)+'月');
+        d += (t.getDate()+'日');
+        d += " ";
+        d += (t.getHours()+'时');
+        d += (t.getMinutes()+'分');
+        d += (t.getSeconds()+'秒');
+        return d;
+      }  
+    },
+    mounted() {
+        this.getQuickNews();
+        this.getMdNews();
     },
     methods: {
       handleClick(tab, event) {
-        console.log(tab, event);
+        console.log();
       },
       onSubmit() {
-        console.log('submit!');
-      }
+        console.log();
+      },
+      getQuickNews(){
+        this.loading = true;
+        let url = "/api/getquicknews"; //本地测试
+        // let url = "/api/getquicknews"; //线上环境
+        
+        Axios.get(url)
+        .then(res=>res.data)
+        .then(data=>{
+            if(data.code ==1){
+                this.loading = false;
+                this.quickNews = [...data.datas.quickNews];
+            }
+        })                
+      },
+      getMdNews(){
+        this.loading = true;
+        let url = "/api/getmdnews"; //本地测试
+        // let url = "/api/getmdnews"; //线上环境
+        
+        Axios.get(url)
+        .then(res=>res.data)
+        .then(data=>{
+            if(data.code ==1){
+                this.loading = false;
+                this.mdNews = data.datas.mdNewsList;
+            }
+        })
+      },
     },
   };
 </script>
@@ -236,7 +265,11 @@ import Axios from 'axios';
         border-radius: 1em;
     }
     .box-card{
-        box-shadow: 0 1px 12px rgba(0,0,0,0.1);
+        box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        margin-bottom: 18px;
+    }
+    .box-card:hover{
+        box-shadow: 0 1px 12px rgba(0,0,0,0.2);
     }
     .news-content{
         padding-left: 1em;

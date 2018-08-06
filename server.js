@@ -18,11 +18,16 @@ app.use(bodyParser());
 const loginRouter = require('./server/routes/user.js');
 const listRouter = require('./server/routes/list.js');
 const detailRouter = require('./server/routes/detail.js');
+const  quickNewsRouter = require('./server/routes/quicknews.js');
+const  addMdNewsRouter = require('./server/routes/addmdnews.js');
+const  getMdNewsRouter = require('./server/routes/getmdnews.js');
 //装载子路由
 router.use('/api', loginRouter.routes(), loginRouter.allowedMethods());
 router.use('/api', listRouter.routes(), listRouter.allowedMethods());
 router.use('/api', detailRouter.routes(), detailRouter.allowedMethods());
-
+router.use('/api', quickNewsRouter.routes(), quickNewsRouter.allowedMethods());
+router.use('/api', addMdNewsRouter.routes(), addMdNewsRouter.allowedMethods());
+router.use('/api', getMdNewsRouter.routes(), getMdNewsRouter.allowedMethods());
 //加载路由中间件
 app.use(router.routes()).use(router.allowedMethods());
 

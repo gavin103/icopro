@@ -47,6 +47,16 @@ const News = resolve => {
     resolve(require('../components/News/News.vue'));
   });
 };
+const NewsDetail = resolve => {
+  require.ensure(['../components/News/NewsDetail.vue'], () => {
+    resolve(require('../components/News/NewsDetail.vue'));
+  });
+};
+const NewsEditor = resolve => {
+  require.ensure(['../components/NewsEditor/NewsEditor.vue'], () => {
+    resolve(require('../components/NewsEditor/NewsEditor.vue'));
+  });
+};
 const Error404 = resolve => {
   require.ensure(['../components/404.vue'], () => {
       resolve(require('../components/404.vue'));
@@ -91,6 +101,16 @@ const router = new Router({
       path: '/news',
       name: 'News',
       component: News,
+    },
+    {
+      path: '/news/:id',
+      name: 'NewsDetail',
+      component: NewsDetail,
+    },
+    {
+      path: '/newseditor',
+      name: 'NewsEditor',
+      component: NewsEditor,
     },
     {
       path: '/login',
