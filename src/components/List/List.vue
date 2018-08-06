@@ -143,7 +143,7 @@
             getIcoList(opt={}){
                 this.loading = true;
                 //let url = "http://127.0.0.1:8888/api/getlist"; //本地测试
-                let url = "http://gavin.frpgz1.idcfengye.com/api/getlist"; //线上环境
+                let url = "/api/getlist"; //线上环境
                 let queryStr = this.formatQry(opt);
                 Axios.get(url+queryStr)
                 .then(res=>res.data)
