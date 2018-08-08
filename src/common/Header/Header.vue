@@ -20,15 +20,9 @@
 <script>
 // import api from '../../axios.js'
 export default {
-      
-    data(){
-
-    },
     mounted() {
 
-    },
-    created(){
-    },
+    }
 }
 </script>
 
