@@ -2,6 +2,11 @@ const Koa = require('koa');
 const app = new Koa();
 const cors = require('koa-cors');
 
+const server = require("http").createServer(app.callback());
+server.listen(8888);
+
+const io = require("socket.io")(server);
+
 app.use(cors());
 
 //router
@@ -31,6 +36,30 @@ router.use('/api', getMdNewsRouter.routes(), getMdNewsRouter.allowedMethods());
 //加载路由中间件
 app.use(router.routes()).use(router.allowedMethods());
 
-app.listen(8888, () => {
-    console.log('The server is running at http://localhost:' + 8888);
+// app.listen(8888, () => {
+//     console.log('The server is running at http://localhost:' + 8888);
+// });
+
+// socket.io 聊天室
+io.on("connection", socket => {
+  const socketId = socket.id;
+  //登录
+  socket.on("login", async userId => {
+    await socketModel.saveUserSocketId(userId, socketId);
+  });
+  // 更新soketId 
+  socket.on("update", async userId => {
+    await socketModel.saveUserSocketId(userId, socketId);
+  });
+
+ // 群聊
+  socket.on("sendGroupMsg", async data => {
+    io.sockets.emit("getGroupMsg", data);
+  });
+
+  socket.on("disconnect", data => {
+    console.log("disconnect", data);
+  });
 });
+
+console.log('The server is running at http://localhost:' + 8888);

@@ -10,8 +10,7 @@
             <router-link to="/profile" tag="li" active-class="active" class="aside-nav-list">
                 个人中心
             </router-link>
-            <li v-if="users" class="aside-nav-list">您好，{{users.username}}}</li>
-            <router-link v-else to="/login" tag="li" active-class="active" class="aside-nav-list">
+            <router-link to="/login" tag="li" active-class="active" class="aside-nav-list">
                 登录/注册
             </router-link>
         </ul>
@@ -19,25 +18,16 @@
 </template>
 
 <script>
-import api from '../../axios.js'
+// import api from '../../axios.js'
 export default {
       
     data(){
-        return {users:null}
+
     },
     mounted() {
-        console.log(this.users)
+
     },
     created(){
-        api.getUser().then((response) => {
-            if(response.status === 401){
-                this.$router.push('/login');
-                //可以把无效的token清楚掉
-                this.$store.dispatch('UserLogout');
-            }else{
-                this.users = response.data.result;
-            }
-        });
     },
 }
 </script>
