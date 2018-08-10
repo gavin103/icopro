@@ -109,7 +109,7 @@ import Axios from 'axios';
     },
     methods: {
       getDetail(id) {
-          let url = "http://gavin.frpgz1.idcfengye.com/api/getdetail";
+          let url = "/api/getdetail";
           Axios.get(`${url}?id=${id}`)
                 .then(res=>res.data)
                 .then(data=>{
