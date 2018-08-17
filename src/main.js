@@ -3,6 +3,8 @@
 import Vue from 'vue'
 import App from './App'
 import router from './router'
+//引入socket.io
+import VueSocketio from 'vue-socket.io';
 
 //引用elment-ui
 import ElementUI from 'element-ui'
@@ -10,6 +12,7 @@ import ElementUI from 'element-ui'
 import 'element-theme-chalk/lib/index.css'
 Vue.use(ElementUI);
 
+Vue.use(VueSocketio, 'http://localhost:8888');
 //引入store
 import store from './store'
 

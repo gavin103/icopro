@@ -1,7 +1,7 @@
 <template>
   <div class="hello">
     <section>
-      <p v-for="item in users" :key="item._id" class="users-list">
+      <p v-for="item in user" :key="item._id" class="users-list">
         B.Best欢迎您 {{ item.username }}
         <!-- <el-button @click="del_user(index, $event)">删除</el-button> -->
       </p>
@@ -17,7 +17,8 @@ import api from '../axios.js'
 export default {
   data(){
     return {
-      users: ''
+      users: [],
+      user:[],
     }
   },
   created(){
@@ -28,6 +29,9 @@ export default {
         this.$store.dispatch('UserLogout');
       }else{
         this.users = response.data.result;
+        if(window.pw){
+          this.user = response.data.result.filter(v=>v.username == window.pw);
+        }
       }
     });
   },
@@ -59,6 +63,7 @@ export default {
                     type: 'success',
                     message: '登出成功'
                 })
+                window.pw=null;
             } else {
                 this.$message({
                     type: 'info',

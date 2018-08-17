@@ -37,6 +37,20 @@
                     </router-link>
 
                 </el-tab-pane> 
+                <el-tab-pane label="项目进展" name="third">
+                    <section class="news-item">
+                        <h3>20分钟看懂区块链</h3>
+                        <div class="frame-wrap">
+                        <iframe src="http://player.bilibili.com/player.html?aid=18450415&cid=30110202&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="500" height="300"> </iframe>
+                        </div>
+                    </section>
+                    <section class="news-item">
+                        <h3>区块链100问</h3>
+                        <div class="frame-wrap">
+                        <iframe src="http://player.bilibili.com/player.html?aid=19985303&cid=32601728&page=1" scrolling="no" border="0" frameborder="no" framespacing="0" allowfullscreen="true" width="500" height="300"> </iframe>
+                        </div>
+                    </section>
+                </el-tab-pane> 
             </el-tabs>
         </div>
         <div class="news-side">
@@ -55,7 +69,17 @@
                 </ul>
             </div>
             <div class="news-chat">
-                聊天室尚未开通
+                <ul class="chat-msg-list">
+                    <li v-for="info in msgList" :key="info.sendTime">
+                        <span>{{info.sendTime | formatDate}}</span>
+                        <p v-if="info.talker == pw" class="my-msg">我&nbsp;说：{{info.msg}}</p>
+                        <p v-else>{{info.talker}}&nbsp;说：{{info.msg}}</p>
+                    </li>
+                </ul>
+                <section class="chat-inputbox">
+                    <el-input v-model="chatMsg" placeholder="请输入内容"></el-input>
+                    <el-button :disabled="canSend" @click="chatSendMsg">发送</el-button>
+                </section>
             </div>
         </div>
     </div>
@@ -122,6 +146,10 @@ import _ from 'lodash';
         ],
         quickNews:[],
         mdNews: [],
+        chatMsg:'',
+        msgList:[],
+        canSend:true,
+        pw:'',
       };
     },
     filters: {
@@ -141,7 +169,21 @@ import _ from 'lodash';
     mounted() {
         this.getQuickNews();
         this.getMdNews();
+        this.chatGetList();
+        if(window.pw){
+            this.canSend = false;
+            this.pw = window.pw;
+        }
     },
+    sockets:{
+        connect: function(){
+            this.id=this.$socket.id
+        },
+        customEmit: function(val){
+        //   io.emit("online", {hello:"world"})
+        }
+    },
+
     methods: {
       handleClick(tab, event) {
         console.log();
@@ -177,6 +219,24 @@ import _ from 'lodash';
             }
         })
       },
+      chatGetList(){
+          const that = this;
+          that.$socket.emit("online",{})
+          that.$socket.on("resOnline",function(data){
+              that.msgList=data;
+          })
+          this.$socket.on("getGroupMsg",function(data){
+            that.msgList=data;
+          })
+      },
+      chatSendMsg(){
+        const that = this;
+        if(window.pw && this.chatMsg){
+            let t = Date.parse(new Date());
+            that.$socket.emit('sendGroupMsg', {msg: that.chatMsg,talker:window.pw,sendTime: t});
+            that.chatMsg = '';
+        }
+      }
     },
   };
 </script>
@@ -275,8 +335,46 @@ import _ from 'lodash';
         padding-left: 1em;
     }
     .news-chat{
-        min-height: 700px;
+        height: 700px;
         box-shadow: 0 1px 5px rgba(0,0,0,0.1) inset;
         border-radius: 3px;
+        position: relative;
+    }
+    .chat-inputbox{
+        display: flex;
+        position: absolute;
+        left: 0;
+        bottom: 0;
+        width: 100%;
+    }
+    .chat-msg-list{
+        width: 100%;
+        height: 660px;
+        overflow-y: scroll;
+    }
+    .chat-msg-list li{
+        width: 100%;
+        margin: 18px 0;
+        padding: 0 1em;
+    }
+    .chat-msg-list li span{
+        color: #ccc;
+        display: block;
+        text-align: center;
+    }
+    .chat-msg-list li p{
+        background:linear-gradient(180deg,#ffffff11,#409EFF66);
+        white-space: normal;
+        word-wrap: break-word;
+        word-break: break-all;
+        padding: 0 1em;
+        border-radius: 8px;
+    }
+    .chat-msg-list .my-msg{
+        background:linear-gradient(180deg,#ffffff11,#F0B90B66);
+        text-align: right;
+    }
+    .frame-wrap{
+        padding: 1em 0 0 1em;
     }
 </style>

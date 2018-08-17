@@ -41,22 +41,19 @@ app.use(router.routes()).use(router.allowedMethods());
 // });
 
 // socket.io 聊天室
+global.chatMem=[];
 io.on("connection", socket => {
   const socketId = socket.id;
-  //登录
-  socket.on("login", async userId => {
-    await socketModel.saveUserSocketId(userId, socketId);
+  socket.on("sendGroupMsg", data => {
+    global.chatMem.push(data);
+    while(global.chatMem.length>200){
+      global.chatMem.shift();
+    }
+    io.sockets.emit("getGroupMsg", global.chatMem);
   });
-  // 更新soketId 
-  socket.on("update", async userId => {
-    await socketModel.saveUserSocketId(userId, socketId);
+  socket.on("online",data=>{
+    io.sockets.emit("resOnline",global.chatMem)
   });
-
- // 群聊
-  socket.on("sendGroupMsg", async data => {
-    io.sockets.emit("getGroupMsg", data);
-  });
-
   socket.on("disconnect", data => {
     console.log("disconnect", data);
   });

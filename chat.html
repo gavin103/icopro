@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<script src="https://cdn.bootcss.com/socket.io/2.1.1/socket.io.js"></script>
+<script>
+   const socket = io.connect('http://localhost:8888');
+   socket.emit('online', { my: 'data' });
+   socket.emit('sendGroupMsg', { hello: 'world' });
+   socket.on('getGroupMsg', function (data) {
+     console.log(data);
+   });
+
+</script>
