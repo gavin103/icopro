@@ -12,7 +12,8 @@ import ElementUI from 'element-ui'
 import 'element-theme-chalk/lib/index.css'
 Vue.use(ElementUI);
 
-Vue.use(VueSocketio, 'http://localhost:8888');
+// Vue.use(VueSocketio, 'http://localhost:8888');
+Vue.use(VueSocketio, window.location.origin);
 //引入store
 import store from './store'
 
